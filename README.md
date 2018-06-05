@@ -1,4 +1,8 @@
-# pipeline
+# Pipeline generator for operations
+
+#Build Status
+
+[![Build Status](https://travis-ci.org/connect2nelson/tictactoe.svg?branch=master)](https://travis-ci.org/connect2nelson/pipeline)
 
 Consider there is a a class called Operation and which will have the member variables
 

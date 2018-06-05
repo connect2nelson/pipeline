@@ -36,8 +36,6 @@ public class PipelineGenerator {
 
         updateUpstreamAdjacencyMatrix();
 
-        System.out.println("upstreamAdjacencyMatrix = " + upstreamAdjacencyMatrix);
-
         Stack<Operation> operationsStack = new Stack<>();
 
         Stack<Operation> sortedOperationsBasedOnUpstreamDeps = new Stack<>();

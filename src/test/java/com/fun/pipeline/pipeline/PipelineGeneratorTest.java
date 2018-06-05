@@ -6,11 +6,11 @@ import org.assertj.core.util.Sets;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 
@@ -62,10 +62,9 @@ public class PipelineGeneratorTest {
         Operation operation3 = new Operation(3, singletonList(operation2), emptyList());
         Operation operation4 = new Operation(4, singletonList(operation3), emptyList());
 
+        operations.add(operation4);
         operations.add(operation2);
         operations.add(operation1);
-        operations.add(operation4);
-
         operations.add(operation3);
 
         PipelineGenerator pipelineGenerator = new PipelineGenerator(operations);
