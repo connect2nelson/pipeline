@@ -35,7 +35,6 @@ public class UpstreamAdjacencyMatrix {
     public void addEdge(int v, int w) {
         if (!adj[v][w]) E++;
         adj[v][w] = true;
-        adj[w][v] = true;
     }
 
     // does the graph contain the edge v-w?
