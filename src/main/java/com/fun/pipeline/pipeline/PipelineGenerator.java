@@ -41,30 +41,36 @@ public class PipelineGenerator {
         Stack<Operation> sortedOperationsBasedOnUpstreamDeps = new Stack<>();
 
         this.operations.forEach(operationToBeIterated -> {
-
-            operationsStack.push(operationToBeIterated);
-
-            pushOperationOnlyIfNotPresent(sortedOperationsBasedOnUpstreamDeps, operationToBeIterated);
-
-            Iterator<Integer> iterator = upstreamAdjacencyMatrix.adj(operationsStack.pop().getId()).iterator();
-
-            if (!visitedFlag[operationToBeIterated.getId()]) {
-                while (iterator.hasNext()) {
-                    Integer operationId = iterator.next();
-                    Operation operationWhoseUpstreamDepNeedsToBeCalculated = this.operations.stream()
-                            .filter(operation -> operation.getId() == operationId).collect(Collectors.toList()).get(0);
-                    operationsStack.push(operationWhoseUpstreamDepNeedsToBeCalculated);
-
-                    pushOperationOnlyIfNotPresent(sortedOperationsBasedOnUpstreamDeps, operationWhoseUpstreamDepNeedsToBeCalculated);
-                }
-                visitedFlag[operationToBeIterated.getId()] = true;
-            }
-
+            performDFSAndSaveOperationsInOrder(operationsStack, sortedOperationsBasedOnUpstreamDeps, operationToBeIterated);
         });
-        List<Operation> collect = new ArrayList<>(sortedOperationsBasedOnUpstreamDeps);
-        Collections.reverse(collect);
+        List<Operation> pipeline = new ArrayList<>(sortedOperationsBasedOnUpstreamDeps);
+        Collections.reverse(pipeline);
 
-        return collect;
+        return pipeline;
+    }
+
+    private void performDFSAndSaveOperationsInOrder(Stack<Operation> operationsStack, Stack<Operation> sortedOperationsBasedOnUpstreamDeps, Operation operationToBeIterated) {
+        operationsStack.push(operationToBeIterated);
+
+        pushOperationOnlyIfNotPresent(sortedOperationsBasedOnUpstreamDeps, operationToBeIterated);
+
+        Iterator<Integer> iterator = upstreamAdjacencyMatrix.adj(operationsStack.pop().getId()).iterator();
+
+        if (!visitedFlag[operationToBeIterated.getId()]) {
+            traverseUpstreamDependentOperations(operationsStack, sortedOperationsBasedOnUpstreamDeps, iterator);
+            visitedFlag[operationToBeIterated.getId()] = true;
+        }
+    }
+
+    private void traverseUpstreamDependentOperations(Stack<Operation> operationsStack, Stack<Operation> sortedOperationsBasedOnUpstreamDeps, Iterator<Integer> iterator) {
+        while (iterator.hasNext()) {
+            Integer operationId = iterator.next();
+            Operation operationWhoseUpstreamDepNeedsToBeCalculated = this.operations.stream()
+                    .filter(operation -> operation.getId() == operationId).collect(Collectors.toList()).get(0);
+            operationsStack.push(operationWhoseUpstreamDepNeedsToBeCalculated);
+
+            pushOperationOnlyIfNotPresent(sortedOperationsBasedOnUpstreamDeps, operationWhoseUpstreamDepNeedsToBeCalculated);
+        }
     }
 
     private void pushOperationOnlyIfNotPresent(Stack<Operation> sortedOperationsBasedOnUpstreamDeps, Operation operationToBeIterated) {
